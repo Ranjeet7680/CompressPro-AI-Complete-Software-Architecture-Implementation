@@ -17,7 +17,7 @@ import json
 from contextlib import asynccontextmanager
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
-from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException, Query, Depends, status
+from fastapi import FastAPI, APIRouter, Request, UploadFile, File, Form, Header, HTTPException, Query, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
@@ -114,9 +114,13 @@ def serve_web_app():
     return FileResponse(os.path.abspath(candidates[1]))
 
 
+# --- API Router Definition ---
+api_router = APIRouter()
+
+
 # --- Health & Stats Endpoints ---
-@app.get("/api/health/live")
-@app.get("/api/v1/health/live")
+@api_router.get("/health/live")
+@api_router.get("/live")
 def health_live():
     return {
         "status": "ok",
@@ -125,8 +129,8 @@ def health_live():
     }
 
 
-@app.get("/api/health/ready")
-@app.get("/api/v1/health/ready")
+@api_router.get("/health/ready")
+@api_router.get("/ready")
 def health_ready(db: Session = Depends(get_db)):
     storage_ok = os.path.exists(str(default_storage.storage_root))
     db_ok = True
@@ -143,8 +147,7 @@ def health_ready(db: Session = Depends(get_db)):
     }
 
 
-@app.get("/api/stats", response_model=StatsResponse)
-@app.get("/api/v1/stats", response_model=StatsResponse)
+@api_router.get("/stats", response_model=StatsResponse)
 def get_system_stats(db: Session = Depends(get_db)):
     """Returns real database aggregated counts and metrics."""
     total_jobs = db.query(DBJob).count()
@@ -165,7 +168,7 @@ def get_system_stats(db: Session = Depends(get_db)):
 
 
 # --- Upload Endpoints (Real DB Persistence) ---
-@app.post("/api/v1/uploads", response_model=UploadResponse)
+@api_router.post("/uploads", response_model=UploadResponse)
 async def upload_file(
     file: UploadFile = File(...),
     category: str = Form(default="inputs"),
@@ -215,7 +218,7 @@ async def upload_file(
 
 
 # --- Job Endpoints (Real DB Persistence) ---
-@app.post("/api/v1/jobs", response_model=JobResponse)
+@api_router.post("/jobs", response_model=JobResponse)
 async def create_job(
     request: CreateJobRequest,
     idempotency_key: Optional[str] = Header(None, alias="Idempotency-Key")
@@ -253,7 +256,7 @@ async def create_job(
     )
 
 
-@app.get("/api/v1/jobs/{job_id}", response_model=JobResponse)
+@api_router.get("/jobs/{job_id}", response_model=JobResponse)
 def get_job(job_id: str):
     """Fetches real-time status and progress directly from real database."""
     job = default_dispatcher.get_job(job_id)
@@ -273,7 +276,7 @@ def get_job(job_id: str):
     )
 
 
-@app.get("/api/v1/jobs", response_model=List[JobResponse])
+@api_router.get("/jobs", response_model=List[JobResponse])
 def list_jobs(limit: int = Query(default=20, le=100), db: Session = Depends(get_db)):
     """Lists recent jobs directly from database ordered newest first."""
     db_jobs = db.query(DBJob).order_by(DBJob.created_at.desc()).limit(limit).all()
@@ -294,7 +297,7 @@ def list_jobs(limit: int = Query(default=20, le=100), db: Session = Depends(get_
     return results
 
 
-@app.post("/api/v1/jobs/{job_id}/cancel")
+@api_router.post("/jobs/{job_id}/cancel")
 def cancel_job(job_id: str):
     """Requests cooperative cancellation of a job in the database."""
     success = default_dispatcher.request_cancellation(job_id)
@@ -306,7 +309,7 @@ def cancel_job(job_id: str):
     return {"job_id": job_id, "status": "cancellation_requested"}
 
 
-@app.delete("/api/v1/jobs/{job_id}")
+@api_router.delete("/jobs/{job_id}")
 def delete_job(job_id: str, db: Session = Depends(get_db)):
     """Deletes job and cleans up output artifacts from database and storage."""
     db_job = db.query(DBJob).filter(DBJob.id == job_id).first()
@@ -321,7 +324,7 @@ def delete_job(job_id: str, db: Session = Depends(get_db)):
     return {"job_id": job_id, "status": "deleted"}
 
 
-@app.get("/api/v1/jobs/{job_id}/artifacts", response_model=List[ArtifactMetadata])
+@api_router.get("/jobs/{job_id}/artifacts", response_model=List[ArtifactMetadata])
 def get_job_artifacts(job_id: str, db: Session = Depends(get_db)):
     """Returns artifacts for a job queried from database."""
     db_job = db.query(DBJob).filter(DBJob.id == job_id).first()
@@ -332,7 +335,7 @@ def get_job_artifacts(job_id: str, db: Session = Depends(get_db)):
     return rec.artifacts
 
 
-@app.get("/api/v1/artifacts/{artifact_id}/download")
+@api_router.get("/artifacts/{artifact_id}/download")
 def download_artifact(artifact_id: str, db: Session = Depends(get_db)):
     """Streams an artifact file directly by ID using database record."""
     art = db.query(DBArtifact).filter(DBArtifact.id == artifact_id).first()
@@ -348,6 +351,40 @@ def download_artifact(artifact_id: str, db: Session = Depends(get_db)):
         media_type=art.mime,
         filename=art.filename
     )
+
+
+# --- Multi-Prefix Router Mounting ---
+# Mounts the API router under all prefix variations to ensure seamless compatibility with
+# direct localhost access, reverse proxies, and Vercel serverless function rewrites.
+app.include_router(api_router)
+app.include_router(api_router, prefix="/v1")
+app.include_router(api_router, prefix="/api")
+app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api/index.py")
+app.include_router(api_router, prefix="/api/index.py/v1")
+
+
+# --- Root Health and Diagnostics Endpoints ---
+@app.get("/healthz")
+@app.get("/api")
+@app.get("/api/")
+@app.get("/api/v1")
+@app.get("/api/v1/")
+@app.get("/api/index.py")
+def root_api_status(request: Request):
+    return {
+        "status": "ok",
+        "service": "CompressPro AI API",
+        "version": "1.0.0",
+        "path": request.url.path,
+        "endpoints": {
+            "health": "/api/v1/health/live",
+            "ready": "/api/v1/health/ready",
+            "stats": "/api/v1/stats",
+            "uploads": "/api/v1/uploads",
+            "jobs": "/api/v1/jobs"
+        }
+    }
 
 
 if __name__ == "__main__":
