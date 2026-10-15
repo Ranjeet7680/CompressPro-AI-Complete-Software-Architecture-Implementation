@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest
+.pytest_cache/
+
+# Storage vault media files
+storage_vault/
+*.tmp
+
+# Node / frontend
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# Environment & Secrets
+.env
+.env.local
+*.log

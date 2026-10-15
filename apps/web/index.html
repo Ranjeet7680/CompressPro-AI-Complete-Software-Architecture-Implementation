@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CompressPro AI — All-in-One Media & Document Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            },
+            surface: {
+              bg: '#090812',
+              card: '#120f24',
+              cardHover: '#181430',
+              border: '#28234d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #090812;
+      color: #f1f0f7;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .gradient-radial {
+      background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.18) 0%, rgba(9, 8, 18, 0) 70%);
+    }
+    .glass-panel {
+      background: rgba(18, 15, 36, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #28234d;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-brand-500 selection:text-white relative">
+  <div class="fixed inset-0 gradient-radial pointer-events-none z-0"></div>
+
+  <!-- Header -->
+  <header class="relative z-10 border-b border-surface-border glass-panel sticky top-0">
+    <div class="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
+      <div class="flex items-center space-x-3 py-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg shadow-brand-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-brand-200 to-brand-400 bg-clip-text text-transparent">CompressPro AI</span>
+            <span class="text-xs px-2 py-0.5 rounded-full font-mono font-medium bg-brand-500/20 text-brand-300 border border-brand-500/30">v1.0 Baseline</span>
+          </div>
+          <p class="text-xs text-brand-300/70">Unified Image, PDF & Video Workspace</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <div class="hidden sm:flex items-center space-x-2 text-xs font-mono text-zinc-400 bg-surface-card px-3 py-1.5 rounded-lg border border-surface-border">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>FastAPI Engine: Active</span>
+        </div>
+        <a href="#history" class="text-xs text-zinc-300 hover:text-white px-3 py-1.5 rounded-lg border border-surface-border hover:bg-white/5 transition">
+          History
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="relative z-10 max-w-5xl mx-auto px-6 py-10 space-y-8">
+    
+    <!-- Hero Title -->
+    <div class="text-center space-y-3">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+        Reduce size, enhance quality, <br>
+        <span class="bg-gradient-to-r from-brand-400 via-pink-400 to-purple-300 bg-clip-text text-transparent">keep absolute control.</span>
+      </h1>
+      <p class="text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base">
+        Deterministic, sandboxed processing for high-volume images, multi-page PDFs, and 4K videos. Privacy by default with automatic file expiration.
+      </p>
+    </div>
+
+    <!-- Domain Tabs -->
+    <div class="flex justify-center">
+      <div class="inline-flex p-1.5 rounded-2xl bg-surface-card border border-surface-border shadow-inner">
+        <button id="tab-image" onclick="setDomain('image')" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 bg-brand-600 text-white shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span>Images</span>
+        </button>
+        <button id="tab-pdf" onclick="setDomain('pdf')" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-zinc-400 hover:text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span>PDF Documents</span>
+        </button>
+        <button id="tab-video" onclick="setDomain('video')" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-zinc-400 hover:text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span>Videos</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Universal Dropzone -->
+    <div id="dropzone" class="glass-panel border-2 border-dashed border-brand-500/30 hover:border-brand-500/70 rounded-3xl p-10 text-center transition cursor-pointer relative group">
+      <input type="file" id="file-input" class="hidden" multiple onchange="handleFilesSelected(this.files)">
+      
+      <div class="space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-500/10 group-hover:bg-brand-500/20 text-brand-400 flex items-center justify-center transition border border-brand-500/20">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Drag and drop your file here, or <span class="text-brand-400 underline">browse</span></h3>
+          <p id="dropzone-hint" class="text-xs text-zinc-400 mt-1 font-mono">Supports JPEG, PNG, WebP up to 250 MB</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Configuration Card -->
+    <div id="config-card" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 hidden border border-surface-border">
+      <div class="flex items-center justify-between pb-4 border-b border-surface-border">
+        <div class="flex items-center space-x-3">
+          <div id="file-icon" class="p-2.5 rounded-xl bg-brand-500/20 text-brand-400">
+            <!-- Icon replaced dynamically -->
+          </div>
+          <div>
+            <h4 id="file-name" class="font-bold text-sm sm:text-base text-white">file_name.ext</h4>
+            <p id="file-meta" class="text-xs font-mono text-zinc-400">0.0 MB • Validated</p>
+          </div>
+        </div>
+        <button onclick="resetSelection()" class="text-xs text-zinc-400 hover:text-red-400 transition font-medium">Remove</button>
+      </div>
+
+      <!-- Settings Controls dynamically injected -->
+      <div id="settings-controls" class="space-y-5">
+        <!-- Injected by JavaScript based on active domain -->
+      </div>
+
+      <!-- Run Action Button -->
+      <div class="pt-2">
+        <button id="btn-process" onclick="startProcessing()" class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-600 via-purple-600 to-pink-600 hover:from-brand-500 hover:to-pink-500 text-white font-bold text-base shadow-lg shadow-brand-600/30 transition transform active:scale-[0.99] flex items-center justify-center space-x-2">
+          <span>Process File</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Job Progress Screen -->
+    <div id="progress-card" class="glass-panel rounded-3xl p-8 space-y-6 hidden border border-brand-500/40 animate-pulse">
+      <div class="flex items-center justify-between">
+        <div class="space-y-1">
+          <span id="progress-stage" class="text-xs font-mono uppercase tracking-wider text-brand-400 font-bold">Validating</span>
+          <h3 id="progress-message" class="text-lg font-bold text-white">Worker claimed job...</h3>
+        </div>
+        <span id="progress-percent" class="text-2xl font-mono font-extrabold text-brand-300">20%</span>
+      </div>
+
+      <div class="w-full bg-surface-card rounded-full h-3 p-0.5 overflow-hidden border border-surface-border">
+        <div id="progress-bar" class="bg-gradient-to-r from-brand-500 to-pink-500 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+      </div>
+
+      <div class="flex justify-between items-center text-xs text-zinc-400">
+        <span class="flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span>
+          <span>Sandboxed CPU/Worker pool</span>
+        </span>
+        <button onclick="cancelActiveJob()" class="text-red-400 hover:underline">Cancel Job</button>
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="result-card" class="glass-panel rounded-3xl p-8 space-y-6 hidden border border-emerald-500/30">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">Processing Complete!</h3>
+            <p id="result-meta" class="text-xs text-zinc-400 font-mono">1 Artifact generated & verified</p>
+          </div>
+        </div>
+        <span id="savings-pill" class="text-sm font-extrabold font-mono px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          -45.2%
+        </span>
+      </div>
+
+      <!-- Before vs After Metrics Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-surface-card border border-surface-border text-center">
+        <div>
+          <div class="text-xs text-zinc-400 font-medium">Original Size</div>
+          <div id="res-orig-size" class="text-sm font-bold text-white font-mono mt-1">1.2 MB</div>
+        </div>
+        <div>
+          <div class="text-xs text-zinc-400 font-medium">New Size</div>
+          <div id="res-new-size" class="text-sm font-bold text-brand-300 font-mono mt-1">650 KB</div>
+        </div>
+        <div>
+          <div class="text-xs text-zinc-400 font-medium">Compression Ratio</div>
+          <div id="res-ratio" class="text-sm font-bold text-white font-mono mt-1">0.54x</div>
+        </div>
+        <div>
+          <div class="text-xs text-zinc-400 font-medium">Dimensions / Pages</div>
+          <div id="res-dims" class="text-sm font-bold text-white font-mono mt-1">1920x1080</div>
+        </div>
+      </div>
+
+      <!-- Download Button -->
+      <div class="flex space-x-4">
+        <a id="btn-download" href="#" class="flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center transition flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Download Artifact</span>
+        </a>
+        <button onclick="resetSelection()" class="px-6 py-3.5 rounded-xl border border-surface-border hover:bg-white/5 text-zinc-300 font-semibold transition">
+          Process Another
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent History Section -->
+    <div id="history" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-surface-border">
+      <h3 class="text-base font-bold text-white flex items-center space-x-2">
+        <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Recent Activity</span>
+      </h3>
+      <div id="history-list" class="space-y-2 text-sm text-zinc-400">
+        <p class="text-xs font-mono text-zinc-500">No jobs run yet in this session.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentDomain = 'image';
+    let uploadedFileKeys = [];
+    let uploadedFileInfo = null;
+    let activeJobId = null;
+    let pollInterval = null;
+
+    const API_BASE = window.location.origin.includes('http') ? '' : 'http://127.0.0.1:8000';
+
+    function setDomain(domain) {
+      currentDomain = domain;
+      ['image', 'pdf', 'video'].forEach(d => {
+        const tab = document.getElementById(`tab-${d}`);
+        if (d === domain) {
+          tab.className = 'px-6 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 bg-brand-600 text-white shadow-md';
+        } else {
+          tab.className = 'px-6 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-zinc-400 hover:text-white';
+        }
+      });
+
+      const hints = {
+        image: 'Supports JPEG, PNG, WebP up to 250 MB',
+        pdf: 'Supports PDF documents up to 500 pages',
+        video: 'Supports MP4, MOV, WebM up to 1 Hour'
+      };
+      document.getElementById('dropzone-hint').innerText = hints[domain];
+
+      if (uploadedFileInfo) {
+        renderSettings();
+      }
+    }
+
+    // Drag and Drop
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('click', () => document.getElementById('file-input').click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-brand-500'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('border-brand-500'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500');
+      if (e.dataTransfer.files.length) handleFilesSelected(e.dataTransfer.files);
+    });
+
+    async function handleFilesSelected(files) {
+      if (!files.length) return;
+      const file = files[0];
+
+      // Auto-switch domain based on extension
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) setDomain('image');
+      else if (ext === 'pdf') setDomain('pdf');
+      else if (['mp4', 'mov', 'webm', 'mkv'].includes(ext)) setDomain('video');
+
+      // Upload file to server
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/uploads`, {
+          method: 'POST',
+          body: formData
+        });
+        if (!resp.ok) {
+          const err = await resp.json();
+          alert('Upload failed: ' + (err.detail?.message || 'Unsupported file'));
+          return;
+        }
+
+        const data = await resp.json();
+        uploadedFileKeys = [data.file_id];
+        uploadedFileInfo = {
+          name: data.filename,
+          size: (data.bytes / 1024 / 1024).toFixed(2) + ' MB',
+          bytes: data.bytes,
+          mime: data.detected_mime
+        };
+
+        showConfig();
+      } catch (err) {
+        alert('Network error communicating with CompressPro API: ' + err.message);
+      }
+    }
+
+    function showConfig() {
+      document.getElementById('dropzone').classList.add('hidden');
+      document.getElementById('config-card').classList.remove('hidden');
+      document.getElementById('result-card').classList.add('hidden');
+      document.getElementById('file-name').innerText = uploadedFileInfo.name;
+      document.getElementById('file-meta').innerText = `${uploadedFileInfo.size} • ${uploadedFileInfo.mime}`;
+      renderSettings();
+    }
+
+    function renderSettings() {
+      const container = document.getElementById('settings-controls');
+      if (currentDomain === 'image') {
+        container.innerHTML = `
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Operation</label>
+              <select id="setting-op" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="image.compress">Compress Size</option>
+                <option value="image.resize">Resize Dimensions</option>
+                <option value="image.convert">Convert Format</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Target Format</label>
+              <select id="setting-format" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="webp">WebP (Optimal)</option>
+                <option value="jpeg">JPEG (Standard)</option>
+                <option value="png">PNG (Lossless)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Quality (<span id="val-quality">80</span>%)</label>
+              <input type="range" id="setting-quality" min="10" max="100" value="80" oninput="document.getElementById('val-quality').innerText = this.value" class="w-full accent-brand-500">
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 pt-1 text-xs text-zinc-400">
+            <input type="checkbox" id="setting-strip-exif" checked class="rounded border-surface-border accent-brand-500">
+            <label for="setting-strip-exif">Strip EXIF metadata (Location, camera, date) for privacy</label>
+          </div>
+        `;
+      } else if (currentDomain === 'pdf') {
+        container.innerHTML = `
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Operation</label>
+              <select id="setting-op" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="pdf.compress">Compress PDF</option>
+                <option value="pdf.split">Split / Extract Pages</option>
+                <option value="pdf.rotate">Rotate Pages</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Preset Profile</label>
+              <select id="setting-preset" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="balanced">Balanced (150 DPI)</option>
+                <option value="screen">Screen (72 DPI - Smallest)</option>
+                <option value="print">Print (300 DPI - High Quality)</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else if (currentDomain === 'video') {
+        container.innerHTML = `
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Quality Preset</label>
+              <select id="setting-vpreset" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="balanced">Balanced (CRF 23)</option>
+                <option value="smaller">Smaller File (CRF 28)</option>
+                <option value="higher_quality">High Quality (CRF 18)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Audio Policy</label>
+              <select id="setting-audio" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="preserve">Preserve Audio (AAC)</option>
+                <option value="remove">Remove / Mute Audio</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Codec</label>
+              <input type="text" value="H.264 / MP4 (Broad Compatibility)" disabled class="w-full bg-surface-card/50 border border-surface-border rounded-xl px-3 py-2 text-xs text-zinc-400">
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    async function startProcessing() {
+      let operation = 'image.compress';
+      let settings = {};
+
+      if (currentDomain === 'image') {
+        operation = document.getElementById('setting-op').value;
+        settings = {
+          output_format: document.getElementById('setting-format').value,
+          quality: parseInt(document.getElementById('setting-quality').value),
+          preserve_metadata: !document.getElementById('setting-strip-exif').checked
+        };
+      } else if (currentDomain === 'pdf') {
+        operation = document.getElementById('setting-op').value;
+        settings = {
+          preset: document.getElementById('setting-preset').value
+        };
+      } else if (currentDomain === 'video') {
+        operation = 'video.compress';
+        settings = {
+          quality_preset: document.getElementById('setting-vpreset').value,
+          audio_policy: document.getElementById('setting-audio').value
+        };
+      }
+
+      document.getElementById('config-card').classList.add('hidden');
+      document.getElementById('progress-card').classList.remove('hidden');
+
+      // Submit Job
+      const resp = await fetch(`${API_BASE}/api/v1/jobs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input_file_ids: uploadedFileKeys,
+          operation: operation,
+          settings: settings
+        })
+      });
+
+      const jobData = await resp.json();
+      activeJobId = jobData.job_id;
+
+      // Start Polling
+      pollInterval = setInterval(pollJobStatus, 500);
+    }
+
+    async function pollJobStatus() {
+      if (!activeJobId) return;
+
+      const resp = await fetch(`${API_BASE}/api/v1/jobs/${activeJobId}`);
+      if (!resp.ok) return;
+
+      const job = await resp.json();
+      const pct = job.progress?.percent || 0;
+      const stage = job.progress?.stage || job.status;
+
+      document.getElementById('progress-percent').innerText = `${pct}%`;
+      document.getElementById('progress-stage').innerText = stage;
+      document.getElementById('progress-message').innerText = job.progress?.message || 'Processing in progress...';
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+
+      if (job.status === 'succeeded') {
+        clearInterval(pollInterval);
+        document.getElementById('progress-card').classList.add('hidden');
+        renderResult(job);
+        loadHistory();
+      } else if (job.status === 'failed' || job.status === 'rejected') {
+        clearInterval(pollInterval);
+        alert('Job failed: ' + (job.error?.message || 'Unknown processing error'));
+        resetSelection();
+      }
+    }
+
+    function renderResult(job) {
+      document.getElementById('result-card').classList.remove('hidden');
+      const art = job.artifacts[0];
+      if (!art) return;
+
+      const origBytes = uploadedFileInfo.bytes;
+      const newBytes = art.bytes;
+      const savings = art.savings_percent || (((origBytes - newBytes) / origBytes) * 100).toFixed(1);
+      const ratio = art.compression_ratio || (newBytes / origBytes).toFixed(2);
+
+      document.getElementById('res-orig-size').innerText = (origBytes / 1024).toFixed(1) + ' KB';
+      document.getElementById('res-new-size').innerText = (newBytes / 1024).toFixed(1) + ' KB';
+      document.getElementById('res-ratio').innerText = `${ratio}x`;
+      document.getElementById('res-dims').innerText = art.width ? `${art.width}x${art.height}` : (art.page_count ? `${art.page_count} Pages` : 'MP4 Clip');
+      
+      const pill = document.getElementById('savings-pill');
+      pill.innerText = `${savings >= 0 ? '−' : '+'}${Math.abs(savings)}%`;
+      pill.className = `text-sm font-extrabold font-mono px-3 py-1 rounded-full border ${
+        savings >= 0 ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+      }`;
+
+      const btnDl = document.getElementById('btn-download');
+      btnDl.href = `${API_BASE}/api/v1/artifacts/${art.id}/download`;
+      btnDl.download = art.filename;
+    }
+
+    async function cancelActiveJob() {
+      if (activeJobId) {
+        await fetch(`${API_BASE}/api/v1/jobs/${activeJobId}/cancel`, { method: 'POST' });
+        clearInterval(pollInterval);
+        alert('Job cancellation requested.');
+        resetSelection();
+      }
+    }
+
+    function resetSelection() {
+      if (pollInterval) clearInterval(pollInterval);
+      activeJobId = null;
+      uploadedFileKeys = [];
+      uploadedFileInfo = null;
+      document.getElementById('dropzone').classList.remove('hidden');
+      document.getElementById('config-card').classList.add('hidden');
+      document.getElementById('progress-card').classList.add('hidden');
+      document.getElementById('result-card').classList.add('hidden');
+      document.getElementById('file-input').value = '';
+    }
+
+    async function loadHistory() {
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/jobs?limit=5`);
+        if (!resp.ok) return;
+        const jobs = await resp.json();
+        const listEl = document.getElementById('history-list');
+        if (!jobs.length) {
+          listEl.innerHTML = '<p class="text-xs font-mono text-zinc-500">No recent jobs found.</p>';
+          return;
+        }
+
+        listEl.innerHTML = jobs.map(j => `
+          <div class="flex items-center justify-between p-3 rounded-xl bg-surface-card border border-surface-border text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full ${j.status === 'succeeded' ? 'bg-emerald-400' : (j.status === 'running' ? 'bg-amber-400' : 'bg-red-400')}"></span>
+              <span class="font-mono text-white">${j.operation}</span>
+              <span class="text-zinc-500">#${j.job_id}</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="font-mono ${j.status === 'succeeded' ? 'text-emerald-400' : 'text-zinc-400'}">${j.status}</span>
+              ${j.artifacts.length ? `<a href="${API_BASE}/api/v1/artifacts/${j.artifacts[0].id}/download" class="text-brand-400 hover:underline">Download</a>` : ''}
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    loadHistory();
+  </script>
+</body>
+</html>
