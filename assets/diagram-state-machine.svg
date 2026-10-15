@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" width="100%" height="100%">
+  <defs>
+    <radialGradient id="stateBg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#140f2b" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#070510" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- State Gradients -->
+    <linearGradient id="activeState" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+
+    <linearGradient id="successState" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <linearGradient id="failedState" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+
+    <linearGradient id="cancelledState" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    @keyframes movePulse {
+      0% { offset-distance: 0%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+    @keyframes stateDash {
+      to { stroke-dashoffset: -32; }
+    }
+    .state-path {
+      stroke-dasharray: 6 6;
+      animation: stateDash 1.4s linear infinite;
+    }
+    .text-sans {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .text-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+
+  <!-- Background -->
+  <rect width="1100" height="420" fill="url(#stateBg)" rx="16" stroke="#251c47" stroke-width="2"/>
+
+  <!-- Diagram Title -->
+  <g transform="translate(50, 40)">
+    <text x="0" y="0" fill="#ffffff" font-size="20" class="text-sans" font-weight="800">
+      ASYNCHRONOUS JOB LIFECYCLE &amp; FINITE STATE MACHINE
+    </text>
+    <text x="0" y="22" fill="#94a3b8" font-size="12" class="text-mono">
+      Atomic Transitions • Cooperative Cancellation • Idempotent Execution
+    </text>
+  </g>
+
+  <!-- Connecting Lines for Main Path -->
+  <g fill="none" stroke-width="3">
+    <!-- CREATED -> VALIDATING -->
+    <path d="M 170 160 L 230 160" stroke="#8b5cf6" class="state-path"/>
+    <!-- VALIDATING -> QUEUED -->
+    <path d="M 370 160 L 430 160" stroke="#8b5cf6" class="state-path"/>
+    <!-- QUEUED -> RUNNING -->
+    <path d="M 570 160 L 630 160" stroke="#8b5cf6" class="state-path"/>
+    <!-- RUNNING -> FINALIZING -->
+    <path d="M 770 160 L 820 160" stroke="#8b5cf6" class="state-path"/>
+    <!-- FINALIZING -> SUCCEEDED -->
+    <path d="M 940 160 L 980 160" stroke="#34d399" class="state-path"/>
+  </g>
+
+  <!-- Branching Lines to Error / Cancellation States -->
+  <g fill="none" stroke-width="2" stroke-dasharray="4 4">
+    <!-- VALIDATING -> REJECTED -->
+    <path d="M 300 210 L 300 310" stroke="#ef4444"/>
+    <!-- QUEUED / RUNNING -> CANCELLED -->
+    <path d="M 500 210 L 500 260 L 600 260 L 600 310" stroke="#f59e0b"/>
+    <path d="M 700 210 L 700 260 L 600 260" stroke="#f59e0b"/>
+    <!-- RUNNING / FINALIZING -> FAILED -->
+    <path d="M 720 210 L 720 280 L 850 280 L 850 310" stroke="#ef4444"/>
+    <!-- SUCCEEDED -> EXPIRED (Retention) -->
+    <path d="M 1030 210 L 1030 310" stroke="#6b7280"/>
+  </g>
+
+  <!-- 1. CREATED -->
+  <g transform="translate(50, 110)">
+    <rect width="120" height="90" rx="12" fill="#1b1438" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="120" height="26" rx="12" fill="#312e81"/>
+    <text x="60" y="18" fill="#c7d2fe" font-size="11" class="text-sans" font-weight="700" text-anchor="middle">CREATED</text>
+    <g transform="translate(10, 36)" class="text-mono" font-size="9" fill="#cbd5e1">
+      <text x="0" y="14">• Request accepted</text>
+      <text x="0" y="28">• UUID assigned</text>
+      <text x="0" y="42">• Idempotency check</text>
+    </g>
+  </g>
+
+  <!-- 2. VALIDATING -->
+  <g transform="translate(230, 110)">
+    <rect width="140" height="90" rx="12" fill="#1b1438" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="140" height="26" rx="12" fill="#312e81"/>
+    <text x="70" y="18" fill="#c7d2fe" font-size="11" class="text-sans" font-weight="700" text-anchor="middle">VALIDATING</text>
+    <g transform="translate(10, 36)" class="text-mono" font-size="9" fill="#cbd5e1">
+      <text x="0" y="14">• Magic byte sniff</text>
+      <text x="0" y="28">• Size bounds check</text>
+      <text x="0" y="42">• DB FileAsset verify</text>
+    </g>
+  </g>
+
+  <!-- 3. QUEUED -->
+  <g transform="translate(430, 110)">
+    <rect width="140" height="90" rx="12" fill="#1b1438" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="140" height="26" rx="12" fill="#312e81"/>
+    <text x="70" y="18" fill="#c7d2fe" font-size="11" class="text-sans" font-weight="700" text-anchor="middle">QUEUED</text>
+    <g transform="translate(10, 36)" class="text-mono" font-size="9" fill="#cbd5e1">
+      <text x="0" y="14">• Enqueued in pool</text>
+      <text x="0" y="28">• ThreadPool ready</text>
+      <text x="0" y="42">• Progress: 10%</text>
+    </g>
+  </g>
+
+  <!-- 4. RUNNING -->
+  <g transform="translate(630, 110)">
+    <rect width="140" height="90" rx="12" fill="#25123d" stroke="#ec4899" stroke-width="2"/>
+    <rect width="140" height="26" rx="12" fill="url(#activeState)"/>
+    <text x="70" y="18" fill="#ffffff" font-size="11" class="text-sans" font-weight="700" text-anchor="middle">RUNNING</text>
+    <g transform="translate(10, 36)" class="text-mono" font-size="9" fill="#fbcfe8">
+      <text x="0" y="14">• Worker claimed</text>
+      <text x="0" y="28">• Engine executes</text>
+      <text x="0" y="42">• Monotonic 20-80%</text>
+    </g>
+  </g>
+
+  <!-- 5. FINALIZING -->
+  <g transform="translate(820, 110)">
+    <rect width="120" height="90" rx="12" fill="#181333" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="120" height="26" rx="12" fill="#312e81"/>
+    <text x="60" y="18" fill="#c7d2fe" font-size="11" class="text-sans" font-weight="700" text-anchor="middle">FINALIZING</text>
+    <g transform="translate(10, 36)" class="text-mono" font-size="9" fill="#cbd5e1">
+      <text x="0" y="14">• Re-decode verify</text>
+      <text x="0" y="28">• Checksum SHA-256</text>
+      <text x="0" y="42">• Savings metrics</text>
+    </g>
+  </g>
+
+  <!-- 6. SUCCEEDED (TERMINAL SUCCESS) -->
+  <g transform="translate(980, 105)">
+    <rect width="100" height="100" rx="14" fill="#0d2419" stroke="#10b981" stroke-width="2.5"/>
+    <rect width="100" height="30" rx="14" fill="url(#successState)"/>
+    <text x="50" y="20" fill="#ffffff" font-size="11" class="text-sans" font-weight="800" text-anchor="middle">SUCCEEDED</text>
+    <g transform="translate(8, 42)" class="text-mono" font-size="9" fill="#a7f3d0">
+      <text x="0" y="14">• Artifact in DB</text>
+      <text x="0" y="28">• Progress 100%</text>
+      <text x="0" y="42">• Download ready</text>
+    </g>
+  </g>
+
+  <!-- TERMINAL ERROR & EXCEPTION STATES -->
+  <!-- REJECTED -->
+  <g transform="translate(240, 310)">
+    <rect width="120" height="60" rx="10" fill="#240c0c" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="60" y="22" fill="#fca5a5" font-size="11" class="text-mono" font-weight="700" text-anchor="middle">REJECTED</text>
+    <text x="60" y="42" fill="#94a3b8" font-size="9" class="text-mono" text-anchor="middle">Invalid Magic / Bomb</text>
+  </g>
+
+  <!-- CANCELLED -->
+  <g transform="translate(540, 310)">
+    <rect width="120" height="60" rx="10" fill="#261a06" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="60" y="22" fill="#fde68a" font-size="11" class="text-mono" font-weight="700" text-anchor="middle">CANCELLED</text>
+    <text x="60" y="42" fill="#94a3b8" font-size="9" class="text-mono" text-anchor="middle">User Signal Handled</text>
+  </g>
+
+  <!-- FAILED -->
+  <g transform="translate(790, 310)">
+    <rect width="120" height="60" rx="10" fill="#240c0c" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="60" y="22" fill="#fca5a5" font-size="11" class="text-mono" font-weight="700" text-anchor="middle">FAILED</text>
+    <text x="60" y="42" fill="#94a3b8" font-size="9" class="text-mono" text-anchor="middle">Processor / Gate Fail</text>
+  </g>
+
+  <!-- EXPIRED -->
+  <g transform="translate(980, 310)">
+    <rect width="100" height="60" rx="10" fill="#16181e" stroke="#4b5563" stroke-width="1.5"/>
+    <text x="50" y="22" fill="#9ca3af" font-size="11" class="text-mono" font-weight="700" text-anchor="middle">EXPIRED</text>
+    <text x="50" y="42" fill="#6b7280" font-size="9" class="text-mono" text-anchor="middle">Lifecycle Purged</text>
+  </g>
+</svg>
