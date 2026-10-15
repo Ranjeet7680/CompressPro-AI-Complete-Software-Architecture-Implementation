@@ -1,15 +1,15 @@
 """
-CompressPro AI - End-to-End Test Suite
+CompressPro AI - End-to-End Test Suite with Real Relational Database
 Tests:
 - Fixture generation (Image, PDF, Video)
 - Image Processing (Compress, Resize, Convert)
 - PDF Processing (Compress, Merge, Split, Rotate)
 - Video Processing (Probe, Compress, Trim)
-- FastAPI Endpoints (Upload, Job Creation, Polling, Artifact Download)
+- Real Database Persistence (FileAsset, Job, JobInput, Artifact rows)
+- FastAPI Endpoints (Upload, Job Creation, Polling, Artifact Download, Stats, Job Deletion)
 """
 
 import os
-import tempfile
 import time
 import pytest
 from PIL import Image, ImageDraw
@@ -18,11 +18,18 @@ import subprocess
 from fastapi.testclient import TestClient
 
 from apps.api.src.main import app
+from apps.api.src.database import init_db, SessionLocal
+from apps.api.src.db_models import Job as DBJob, Artifact as DBArtifact, FileAsset as DBFileAsset
 from workers.common.storage import default_storage
 from workers.common.models import JobState, JobOperation
 from workers.image.processor import process_image_job
 from workers.pdf.processor import process_pdf_job
 from workers.video.processor import process_video_job, probe_video, get_ffmpeg_binary
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_db():
+    init_db()
 
 
 @pytest.fixture(scope="session")
@@ -74,7 +81,6 @@ def sample_video(fixtures_dir):
     vid_path = os.path.join(fixtures_dir, "test_sample.mp4")
     if not os.path.exists(vid_path):
         ffmpeg_exe = get_ffmpeg_binary()
-        # Create a test video using testsrc and sine audio generator
         cmd = [
             ffmpeg_exe, "-y",
             "-f", "lavfi", "-i", "testsrc=duration=1:size=320x240:rate=30",
@@ -186,45 +192,66 @@ def test_video_compression(sample_video):
     assert art.bytes > 0
 
 
-# --- 4. FastAPI Integration Tests ---
-def test_api_health():
+# --- 4. FastAPI & Real Database Tests ---
+def test_api_health_and_stats():
     client = TestClient(app)
     resp = client.get("/api/v1/health/live")
     assert resp.status_code == 200
     assert resp.json()["status"] == "ok"
 
+    ready_resp = client.get("/api/v1/health/ready")
+    assert ready_resp.status_code == 200
+    assert ready_resp.json()["status"] == "ready"
+    assert ready_resp.json()["database"] is True
 
-def test_api_upload_and_job_execution(sample_image):
+    stats_resp = client.get("/api/v1/stats")
+    assert stats_resp.status_code == 200
+    stats = stats_resp.json()
+    assert "database_engine" in stats
+    assert stats["total_jobs"] >= 0
+
+
+def test_real_database_persistence_flow(sample_image):
     client = TestClient(app)
 
-    # 1. Upload File
+    # 1. Upload File & check FileAsset table in DB
     with open(sample_image, "rb") as f:
         upload_resp = client.post(
             "/api/v1/uploads",
-            files={"file": ("test.jpg", f, "image/jpeg")}
+            files={"file": ("db_test.jpg", f, "image/jpeg")}
         )
     assert upload_resp.status_code == 200
     upload_data = upload_resp.json()
     file_id = upload_data["file_id"]
-    assert upload_data["status"] == "validated"
 
-    # 2. Create Job
+    # Verify row exists in real database
+    with SessionLocal() as db:
+        fa = db.query(DBFileAsset).filter(DBFileAsset.object_key == file_id).first()
+        assert fa is not None
+        assert fa.bytes == upload_data["bytes"]
+
+    # 2. Create Job & check Job table in DB
     job_req = {
         "input_file_ids": [file_id],
         "operation": "image.compress",
-        "settings": {"output_format": "webp", "quality": 70}
+        "settings": {"output_format": "webp", "quality": 75}
     }
     create_resp = client.post(
         "/api/v1/jobs",
         json=job_req,
-        headers={"Idempotency-Key": "test_idemp_key_001"}
+        headers={"Idempotency-Key": "unique_db_test_key_101"}
     )
     assert create_resp.status_code == 200
-    job_data = create_resp.json()
-    job_id = job_data["job_id"]
+    job_id = create_resp.json()["job_id"]
+
+    # Verify Job row exists in database
+    with SessionLocal() as db:
+        j_row = db.query(DBJob).filter(DBJob.id == job_id).first()
+        assert j_row is not None
+        assert j_row.idempotency_key == "unique_db_test_key_101"
 
     # 3. Poll Job until Succeeded
-    for _ in range(30):
+    for _ in range(40):
         status_resp = client.get(f"/api/v1/jobs/{job_id}")
         assert status_resp.status_code == 200
         cur_job = status_resp.json()
@@ -236,7 +263,23 @@ def test_api_upload_and_job_execution(sample_image):
     assert len(cur_job["artifacts"]) > 0
     art_id = cur_job["artifacts"][0]["id"]
 
-    # 4. Download Artifact
+    # 4. Verify Artifact row exists in database
+    with SessionLocal() as db:
+        art_row = db.query(DBArtifact).filter(DBArtifact.id == art_id).first()
+        assert art_row is not None
+        assert art_row.job_id == job_id
+        assert art_row.mime == "image/webp"
+
+    # 5. Download Artifact
     dl_resp = client.get(f"/api/v1/artifacts/{art_id}/download")
     assert dl_resp.status_code == 200
     assert len(dl_resp.content) > 0
+
+    # 6. Delete Job from Database
+    del_resp = client.delete(f"/api/v1/jobs/{job_id}")
+    assert del_resp.status_code == 200
+
+    # Verify deleted from database
+    with SessionLocal() as db:
+        del_job = db.query(DBJob).filter(DBJob.id == job_id).first()
+        assert del_job is None

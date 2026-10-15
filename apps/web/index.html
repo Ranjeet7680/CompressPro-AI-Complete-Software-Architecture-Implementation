@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CompressPro AI — All-in-One Media & Document Workspace</title>
+  <title>CompressPro AI — Complete Media & Document Workspace</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,19 +48,12 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .gradient-radial {
-      background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.18) 0%, rgba(9, 8, 18, 0) 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.22) 0%, rgba(9, 8, 18, 0) 70%);
     }
     .glass-panel {
-      background: rgba(18, 15, 36, 0.75);
+      background: rgba(18, 15, 36, 0.8);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(139, 92, 246, 0.2);
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #28234d;
-      border-radius: 9999px;
+      border: 1px solid rgba(139, 92, 246, 0.22);
     }
   </style>
 </head>
@@ -79,35 +72,59 @@
         <div>
           <div class="flex items-center space-x-2">
             <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-brand-200 to-brand-400 bg-clip-text text-transparent">CompressPro AI</span>
-            <span class="text-xs px-2 py-0.5 rounded-full font-mono font-medium bg-brand-500/20 text-brand-300 border border-brand-500/30">v1.0 Baseline</span>
+            <span class="text-xs px-2 py-0.5 rounded-full font-mono font-medium bg-brand-500/20 text-brand-300 border border-brand-500/30">Production Baseline</span>
           </div>
           <p class="text-xs text-brand-300/70">Unified Image, PDF & Video Workspace</p>
         </div>
       </div>
 
-      <div class="flex items-center space-x-4">
-        <div class="hidden sm:flex items-center space-x-2 text-xs font-mono text-zinc-400 bg-surface-card px-3 py-1.5 rounded-lg border border-surface-border">
+      <!-- Real DB & Backend Status Pill -->
+      <div class="flex items-center space-x-3">
+        <div id="db-badge" class="flex items-center space-x-2 text-xs font-mono text-zinc-300 bg-surface-card px-3 py-1.5 rounded-lg border border-surface-border">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>FastAPI Engine: Active</span>
+          <span>Database: <strong class="text-brand-300" id="db-name">Connecting...</strong></span>
         </div>
-        <a href="#history" class="text-xs text-zinc-300 hover:text-white px-3 py-1.5 rounded-lg border border-surface-border hover:bg-white/5 transition">
-          History
+        <a href="#history" class="text-xs text-zinc-300 hover:text-white px-3 py-1.5 rounded-lg border border-surface-border hover:bg-white/5 transition flex items-center space-x-1.5">
+          <svg class="w-3.5 h-3.5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Vault History</span>
         </a>
       </div>
     </div>
   </header>
 
+  <!-- Live Stats Bar -->
+  <div class="relative z-10 max-w-7xl mx-auto px-6 pt-6">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+      <div class="glass-panel p-3 rounded-xl border border-surface-border flex items-center justify-between">
+        <span class="text-zinc-400">Total Jobs</span>
+        <span id="stat-jobs" class="text-brand-300 font-bold text-sm">0</span>
+      </div>
+      <div class="glass-panel p-3 rounded-xl border border-surface-border flex items-center justify-between">
+        <span class="text-zinc-400">Total Artifacts</span>
+        <span id="stat-artifacts" class="text-brand-300 font-bold text-sm">0</span>
+      </div>
+      <div class="glass-panel p-3 rounded-xl border border-surface-border flex items-center justify-between">
+        <span class="text-zinc-400">Processed</span>
+        <span id="stat-src-bytes" class="text-brand-300 font-bold text-sm">0 MB</span>
+      </div>
+      <div class="glass-panel p-3 rounded-xl border border-surface-border flex items-center justify-between">
+        <span class="text-zinc-400">Bytes Saved</span>
+        <span id="stat-saved-bytes" class="text-emerald-400 font-bold text-sm">0 MB</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Main Container -->
-  <main class="relative z-10 max-w-5xl mx-auto px-6 py-10 space-y-8">
+  <main class="relative z-10 max-w-5xl mx-auto px-6 py-8 space-y-8">
     
     <!-- Hero Title -->
-    <div class="text-center space-y-3">
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+    <div class="text-center space-y-2">
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
         Reduce size, enhance quality, <br>
-        <span class="bg-gradient-to-r from-brand-400 via-pink-400 to-purple-300 bg-clip-text text-transparent">keep absolute control.</span>
+        <span class="bg-gradient-to-r from-brand-400 via-pink-400 to-purple-300 bg-clip-text text-transparent">with real database durability.</span>
       </h1>
-      <p class="text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base">
-        Deterministic, sandboxed processing for high-volume images, multi-page PDFs, and 4K videos. Privacy by default with automatic file expiration.
+      <p class="text-zinc-400 max-w-2xl mx-auto text-xs sm:text-sm">
+        Deterministic, sandboxed processing for high-volume images, multi-page PDFs, and 4K videos. Jobs, files, and artifacts persist securely in the database.
       </p>
     </div>
 
@@ -140,36 +157,34 @@
           </svg>
         </div>
         <div>
-          <h3 class="text-lg font-bold text-white">Drag and drop your file here, or <span class="text-brand-400 underline">browse</span></h3>
+          <h3 class="text-lg font-bold text-white">Drag & drop files here, or <span class="text-brand-400 underline">browse</span></h3>
           <p id="dropzone-hint" class="text-xs text-zinc-400 mt-1 font-mono">Supports JPEG, PNG, WebP up to 250 MB</p>
         </div>
       </div>
     </div>
 
-    <!-- Active Configuration Card -->
+    <!-- Active File Configuration Card -->
     <div id="config-card" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 hidden border border-surface-border">
       <div class="flex items-center justify-between pb-4 border-b border-surface-border">
         <div class="flex items-center space-x-3">
-          <div id="file-icon" class="p-2.5 rounded-xl bg-brand-500/20 text-brand-400">
-            <!-- Icon replaced dynamically -->
+          <div class="p-2.5 rounded-xl bg-brand-500/20 text-brand-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </div>
           <div>
             <h4 id="file-name" class="font-bold text-sm sm:text-base text-white">file_name.ext</h4>
-            <p id="file-meta" class="text-xs font-mono text-zinc-400">0.0 MB • Validated</p>
+            <p id="file-meta" class="text-xs font-mono text-zinc-400">0.0 MB • Database Record Verified</p>
           </div>
         </div>
-        <button onclick="resetSelection()" class="text-xs text-zinc-400 hover:text-red-400 transition font-medium">Remove</button>
+        <button onclick="resetSelection()" class="text-xs text-zinc-400 hover:text-red-400 transition font-medium">Clear</button>
       </div>
 
       <!-- Settings Controls dynamically injected -->
-      <div id="settings-controls" class="space-y-5">
-        <!-- Injected by JavaScript based on active domain -->
-      </div>
+      <div id="settings-controls" class="space-y-5"></div>
 
       <!-- Run Action Button -->
       <div class="pt-2">
         <button id="btn-process" onclick="startProcessing()" class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-600 via-purple-600 to-pink-600 hover:from-brand-500 hover:to-pink-500 text-white font-bold text-base shadow-lg shadow-brand-600/30 transition transform active:scale-[0.99] flex items-center justify-center space-x-2">
-          <span>Process File</span>
+          <span>Start Processing Job</span>
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </button>
       </div>
@@ -192,13 +207,13 @@
       <div class="flex justify-between items-center text-xs text-zinc-400">
         <span class="flex items-center space-x-1.5">
           <span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span>
-          <span>Sandboxed CPU/Worker pool</span>
+          <span>Sandboxed Engine Worker</span>
         </span>
         <button onclick="cancelActiveJob()" class="text-red-400 hover:underline">Cancel Job</button>
       </div>
     </div>
 
-    <!-- Results Screen -->
+    <!-- Results Screen & Visual Comparison -->
     <div id="result-card" class="glass-panel rounded-3xl p-8 space-y-6 hidden border border-emerald-500/30">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -207,7 +222,7 @@
           </div>
           <div>
             <h3 class="text-lg font-bold text-white">Processing Complete!</h3>
-            <p id="result-meta" class="text-xs text-zinc-400 font-mono">1 Artifact generated & verified</p>
+            <p id="result-meta" class="text-xs text-zinc-400 font-mono">Output verified and stored in database</p>
           </div>
         </div>
         <span id="savings-pill" class="text-sm font-extrabold font-mono px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
@@ -235,6 +250,14 @@
         </div>
       </div>
 
+      <!-- Interactive Preview Section -->
+      <div id="preview-section" class="p-4 rounded-2xl bg-surface-card/60 border border-surface-border space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono">Output Artifact Preview</h4>
+        <div id="preview-container" class="flex justify-center items-center rounded-xl overflow-hidden bg-black/40 min-h-[160px] p-2">
+          <!-- Dynamically populated image or video tag -->
+        </div>
+      </div>
+
       <!-- Download Button -->
       <div class="flex space-x-4">
         <a id="btn-download" href="#" class="flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center transition flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
@@ -247,14 +270,18 @@
       </div>
     </div>
 
-    <!-- Recent History Section -->
+    <!-- Real Database History Vault -->
     <div id="history" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-surface-border">
-      <h3 class="text-base font-bold text-white flex items-center space-x-2">
-        <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span>Recent Activity</span>
-      </h3>
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white flex items-center space-x-2">
+          <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7M4 7c0-2 1.5-3 3.5-3h9c2 0 3.5 1 3.5 3M4 7h16m-8 4v6m-3-3h6"/></svg>
+          <span>Database Job Ledger & Asset Vault</span>
+        </h3>
+        <button onclick="loadDatabaseStats(); loadHistory();" class="text-xs text-brand-400 hover:underline font-mono">Refresh DB</button>
+      </div>
+
       <div id="history-list" class="space-y-2 text-sm text-zinc-400">
-        <p class="text-xs font-mono text-zinc-500">No jobs run yet in this session.</p>
+        <p class="text-xs font-mono text-zinc-500">Loading persistent records from database...</p>
       </div>
     </div>
 
@@ -269,6 +296,22 @@
 
     const API_BASE = window.location.origin.includes('http') ? '' : 'http://127.0.0.1:8000';
 
+    async function loadDatabaseStats() {
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/stats`);
+        if (resp.ok) {
+          const stats = await resp.json();
+          document.getElementById('db-name').innerText = stats.database_engine.toUpperCase();
+          document.getElementById('stat-jobs').innerText = stats.total_jobs;
+          document.getElementById('stat-artifacts').innerText = stats.total_artifacts;
+          document.getElementById('stat-src-bytes').innerText = (stats.total_source_bytes / 1024 / 1024).toFixed(1) + ' MB';
+          document.getElementById('stat-saved-bytes').innerText = (stats.total_bytes_saved / 1024 / 1024).toFixed(1) + ' MB';
+        }
+      } catch (e) {
+        document.getElementById('db-name').innerText = 'OFFLINE';
+      }
+    }
+
     function setDomain(domain) {
       currentDomain = domain;
       ['image', 'pdf', 'video'].forEach(d => {
@@ -282,7 +325,7 @@
 
       const hints = {
         image: 'Supports JPEG, PNG, WebP up to 250 MB',
-        pdf: 'Supports PDF documents up to 500 pages',
+        pdf: 'Supports single & multi-file PDF documents up to 500 pages',
         video: 'Supports MP4, MOV, WebM up to 1 Hour'
       };
       document.getElementById('dropzone-hint').innerText = hints[domain];
@@ -305,42 +348,51 @@
 
     async function handleFilesSelected(files) {
       if (!files.length) return;
-      const file = files[0];
 
-      // Auto-switch domain based on extension
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) setDomain('image');
-      else if (ext === 'pdf') setDomain('pdf');
-      else if (['mp4', 'mov', 'webm', 'mkv'].includes(ext)) setDomain('video');
+      uploadedFileKeys = [];
+      let totalBytes = 0;
+      let displayNames = [];
 
-      // Upload file to server
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/uploads`, {
-          method: 'POST',
-          body: formData
-        });
-        if (!resp.ok) {
-          const err = await resp.json();
-          alert('Upload failed: ' + (err.detail?.message || 'Unsupported file'));
-          return;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (i === 0) {
+          if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) setDomain('image');
+          else if (ext === 'pdf') setDomain('pdf');
+          else if (['mp4', 'mov', 'webm', 'mkv'].includes(ext)) setDomain('video');
         }
 
-        const data = await resp.json();
-        uploadedFileKeys = [data.file_id];
-        uploadedFileInfo = {
-          name: data.filename,
-          size: (data.bytes / 1024 / 1024).toFixed(2) + ' MB',
-          bytes: data.bytes,
-          mime: data.detected_mime
-        };
+        const formData = new FormData();
+        formData.append('file', file);
 
-        showConfig();
-      } catch (err) {
-        alert('Network error communicating with CompressPro API: ' + err.message);
+        try {
+          const resp = await fetch(`${API_BASE}/api/v1/uploads`, {
+            method: 'POST',
+            body: formData
+          });
+          if (!resp.ok) {
+            const err = await resp.json();
+            alert('Upload failed: ' + (err.detail?.message || 'Unsupported file'));
+            return;
+          }
+          const data = await resp.json();
+          uploadedFileKeys.push(data.file_id);
+          totalBytes += data.bytes;
+          displayNames.push(data.filename);
+        } catch (err) {
+          alert('Network error connecting to API: ' + err.message);
+          return;
+        }
       }
+
+      uploadedFileInfo = {
+        name: displayNames.length === 1 ? displayNames[0] : `${displayNames.length} Files Selected (${displayNames[0]}, ...)`,
+        size: (totalBytes / 1024 / 1024).toFixed(2) + ' MB',
+        bytes: totalBytes,
+        count: files.length
+      };
+
+      showConfig();
     }
 
     function showConfig() {
@@ -348,12 +400,14 @@
       document.getElementById('config-card').classList.remove('hidden');
       document.getElementById('result-card').classList.add('hidden');
       document.getElementById('file-name').innerText = uploadedFileInfo.name;
-      document.getElementById('file-meta').innerText = `${uploadedFileInfo.size} • ${uploadedFileInfo.mime}`;
+      document.getElementById('file-meta').innerText = `${uploadedFileInfo.size} • Verified in Database`;
       renderSettings();
     }
 
     function renderSettings() {
       const container = document.getElementById('settings-controls');
+      const isMulti = uploadedFileInfo?.count > 1;
+
       if (currentDomain === 'image') {
         container.innerHTML = `
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -363,6 +417,7 @@
                 <option value="image.compress">Compress Size</option>
                 <option value="image.resize">Resize Dimensions</option>
                 <option value="image.convert">Convert Format</option>
+                ${isMulti ? '<option value="image.to_pdf">Combine Images into single PDF</option>' : ''}
               </select>
             </div>
             <div>
@@ -389,17 +444,19 @@
             <div>
               <label class="block text-xs font-semibold text-zinc-300 mb-2">Operation</label>
               <select id="setting-op" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                ${isMulti ? '<option value="pdf.merge">Merge PDFs in Order</option>' : ''}
                 <option value="pdf.compress">Compress PDF</option>
                 <option value="pdf.split">Split / Extract Pages</option>
                 <option value="pdf.rotate">Rotate Pages</option>
+                <option value="pdf.to_images">Export PDF Pages to Images</option>
               </select>
             </div>
             <div>
               <label class="block text-xs font-semibold text-zinc-300 mb-2">Preset Profile</label>
               <select id="setting-preset" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-                <option value="balanced">Balanced (150 DPI)</option>
-                <option value="screen">Screen (72 DPI - Smallest)</option>
-                <option value="print">Print (300 DPI - High Quality)</option>
+                <option value="balanced">Balanced (150 DPI - Standard)</option>
+                <option value="screen">Screen (72 DPI - Ultra Compressed)</option>
+                <option value="print">Print (300 DPI - Vector Retention)</option>
               </select>
             </div>
           </div>
@@ -418,13 +475,13 @@
             <div>
               <label class="block text-xs font-semibold text-zinc-300 mb-2">Audio Policy</label>
               <select id="setting-audio" class="w-full bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-                <option value="preserve">Preserve Audio (AAC)</option>
-                <option value="remove">Remove / Mute Audio</option>
+                <option value="preserve">Preserve Audio (AAC 128k)</option>
+                <option value="remove">Mute / Strip Audio Track</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-zinc-300 mb-2">Codec</label>
-              <input type="text" value="H.264 / MP4 (Broad Compatibility)" disabled class="w-full bg-surface-card/50 border border-surface-border rounded-xl px-3 py-2 text-xs text-zinc-400">
+              <label class="block text-xs font-semibold text-zinc-300 mb-2">Codec & Output</label>
+              <input type="text" value="H.264 / AAC MP4 (FastStart)" disabled class="w-full bg-surface-card/50 border border-surface-border rounded-xl px-3 py-2 text-xs text-zinc-400">
             </div>
           </div>
         `;
@@ -438,14 +495,14 @@
       if (currentDomain === 'image') {
         operation = document.getElementById('setting-op').value;
         settings = {
-          output_format: document.getElementById('setting-format').value,
-          quality: parseInt(document.getElementById('setting-quality').value),
-          preserve_metadata: !document.getElementById('setting-strip-exif').checked
+          output_format: document.getElementById('setting-format')?.value || 'webp',
+          quality: parseInt(document.getElementById('setting-quality')?.value || 80),
+          preserve_metadata: !document.getElementById('setting-strip-exif')?.checked
         };
       } else if (currentDomain === 'pdf') {
         operation = document.getElementById('setting-op').value;
         settings = {
-          preset: document.getElementById('setting-preset').value
+          preset: document.getElementById('setting-preset')?.value || 'balanced'
         };
       } else if (currentDomain === 'video') {
         operation = 'video.compress';
@@ -458,7 +515,7 @@
       document.getElementById('config-card').classList.add('hidden');
       document.getElementById('progress-card').classList.remove('hidden');
 
-      // Submit Job
+      // Submit Job to Real Database
       const resp = await fetch(`${API_BASE}/api/v1/jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -495,10 +552,11 @@
         clearInterval(pollInterval);
         document.getElementById('progress-card').classList.add('hidden');
         renderResult(job);
+        loadDatabaseStats();
         loadHistory();
       } else if (job.status === 'failed' || job.status === 'rejected') {
         clearInterval(pollInterval);
-        alert('Job failed: ' + (job.error?.message || 'Unknown processing error'));
+        alert('Job failed: ' + (job.error?.message || 'Processing error'));
         resetSelection();
       }
     }
@@ -516,7 +574,7 @@
       document.getElementById('res-orig-size').innerText = (origBytes / 1024).toFixed(1) + ' KB';
       document.getElementById('res-new-size').innerText = (newBytes / 1024).toFixed(1) + ' KB';
       document.getElementById('res-ratio').innerText = `${ratio}x`;
-      document.getElementById('res-dims').innerText = art.width ? `${art.width}x${art.height}` : (art.page_count ? `${art.page_count} Pages` : 'MP4 Clip');
+      document.getElementById('res-dims').innerText = art.width ? `${art.width}x${art.height}` : (art.page_count ? `${art.page_count} Pages` : 'MP4 Video');
       
       const pill = document.getElementById('savings-pill');
       pill.innerText = `${savings >= 0 ? '−' : '+'}${Math.abs(savings)}%`;
@@ -524,8 +582,20 @@
         savings >= 0 ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
       }`;
 
+      // Populate Visual Preview
+      const previewCont = document.getElementById('preview-container');
+      const dlUrl = `${API_BASE}/api/v1/artifacts/${art.id}/download`;
+
+      if (art.mime.startsWith('image/')) {
+        previewCont.innerHTML = `<img src="${dlUrl}" class="max-h-64 rounded-lg object-contain shadow-md" alt="Processed Image Preview">`;
+      } else if (art.mime.startsWith('video/')) {
+        previewCont.innerHTML = `<video controls class="max-h-64 rounded-lg shadow-md"><source src="${dlUrl}" type="${art.mime}">Your browser does not support video.</video>`;
+      } else {
+        previewCont.innerHTML = `<div class="text-zinc-400 text-xs font-mono flex items-center space-x-2"><svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><span>PDF Document (${art.page_count || 1} Pages) Ready for Download</span></div>`;
+      }
+
       const btnDl = document.getElementById('btn-download');
-      btnDl.href = `${API_BASE}/api/v1/artifacts/${art.id}/download`;
+      btnDl.href = dlUrl;
       btnDl.download = art.filename;
     }
 
@@ -535,6 +605,19 @@
         clearInterval(pollInterval);
         alert('Job cancellation requested.');
         resetSelection();
+      }
+    }
+
+    async function deleteJobFromVault(jobId) {
+      if (!confirm(`Delete job ${jobId} and all associated artifacts from database and storage?`)) return;
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/jobs/${jobId}`, { method: 'DELETE' });
+        if (resp.ok) {
+          loadDatabaseStats();
+          loadHistory();
+        }
+      } catch (e) {
+        alert('Delete failed: ' + e.message);
       }
     }
 
@@ -552,31 +635,46 @@
 
     async function loadHistory() {
       try {
-        const resp = await fetch(`${API_BASE}/api/v1/jobs?limit=5`);
+        const resp = await fetch(`${API_BASE}/api/v1/jobs?limit=10`);
         if (!resp.ok) return;
         const jobs = await resp.json();
         const listEl = document.getElementById('history-list');
         if (!jobs.length) {
-          listEl.innerHTML = '<p class="text-xs font-mono text-zinc-500">No recent jobs found.</p>';
+          listEl.innerHTML = '<p class="text-xs font-mono text-zinc-500">No persistent jobs found in database.</p>';
           return;
         }
 
-        listEl.innerHTML = jobs.map(j => `
-          <div class="flex items-center justify-between p-3 rounded-xl bg-surface-card border border-surface-border text-xs">
-            <div class="flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full ${j.status === 'succeeded' ? 'bg-emerald-400' : (j.status === 'running' ? 'bg-amber-400' : 'bg-red-400')}"></span>
-              <span class="font-mono text-white">${j.operation}</span>
-              <span class="text-zinc-500">#${j.job_id}</span>
+        listEl.innerHTML = jobs.map(j => {
+          const art = j.artifacts && j.artifacts[0];
+          const savings = art?.savings_percent ? `${art.savings_percent}%` : '';
+          return `
+            <div class="flex items-center justify-between p-3.5 rounded-xl bg-surface-card border border-surface-border text-xs hover:border-brand-500/40 transition">
+              <div class="flex items-center space-x-3">
+                <span class="w-2.5 h-2.5 rounded-full ${j.status === 'succeeded' ? 'bg-emerald-400' : (j.status === 'running' ? 'bg-amber-400' : 'bg-red-400')}"></span>
+                <div>
+                  <div class="font-mono text-white font-medium flex items-center space-x-2">
+                    <span>${j.operation}</span>
+                    <span class="text-zinc-500 text-[10px]">#${j.job_id}</span>
+                  </div>
+                  <div class="text-[11px] text-zinc-500 font-mono mt-0.5">
+                    ${new Date(j.created_at).toLocaleTimeString()} • ${j.status.toUpperCase()} ${savings ? `• Saved ${savings}` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3">
+                ${j.artifacts.length ? `<a href="${API_BASE}/api/v1/artifacts/${j.artifacts[0].id}/download" class="px-2.5 py-1 rounded bg-brand-600/30 text-brand-300 hover:bg-brand-600/50 border border-brand-500/30 transition">Download</a>` : ''}
+                <button onclick="deleteJobFromVault('${j.job_id}')" class="text-zinc-500 hover:text-red-400 transition" title="Delete from Database">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
             </div>
-            <div class="flex items-center space-x-3">
-              <span class="font-mono ${j.status === 'succeeded' ? 'text-emerald-400' : 'text-zinc-400'}">${j.status}</span>
-              ${j.artifacts.length ? `<a href="${API_BASE}/api/v1/artifacts/${j.artifacts[0].id}/download" class="text-brand-400 hover:underline">Download</a>` : ''}
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       } catch (e) {}
     }
 
+    // Initialize stats and history on page load
+    loadDatabaseStats();
     loadHistory();
   </script>
 </body>
