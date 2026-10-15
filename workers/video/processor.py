@@ -22,8 +22,16 @@ from workers.common.storage import default_storage, StorageInterface
 
 
 def get_ffmpeg_binary() -> str:
-    """Returns absolute path to verified FFmpeg binary."""
-    return imageio_ffmpeg.get_ffmpeg_exe()
+    """Returns absolute path to verified FFmpeg binary across Windows, Linux, and Vercel."""
+    import shutil
+    sys_ffmpeg = shutil.which("ffmpeg")
+    if sys_ffmpeg:
+        return sys_ffmpeg
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return "ffmpeg"
 
 
 def probe_video(file_path: str) -> Dict[str, Any]:

@@ -9,7 +9,11 @@
   <a href="#-real-relational-database"><img src="https://img.shields.io/badge/Database-SQLite%20(WAL)%20%7C%20Postgres-10b981?style=for-the-badge&logo=postgresql" alt="Database" /></a>
   <a href="#-testing--280-case-validation-catalog"><img src="https://img.shields.io/badge/Test%20Catalog-280%20Specs%20Planned-ec4899?style=for-the-badge&logo=pytest" alt="Test Catalog" /></a>
   <a href="#-zero-trust-security-model"><img src="https://img.shields.io/badge/Security-Zero--Trust%20Sandboxed-3b82f6?style=for-the-badge&logo=shield" alt="Security" /></a>
-  <a href="https://github.com/Ranjeet7680/CompressPro-AI-Complete-Software-Architecture-Implementation"><img src="https://img.shields.io/badge/Release-v1.0%20Production%20Baseline-f59e0b?style=for-the-badge&logo=github" alt="GitHub" /></a>
+  <a href="https://github.com/Ranjeet7680/CompressPro-AI-Complete-Software-Architecture-Implementation/wiki"><img src="https://img.shields.io/badge/📖%20Wiki-20%20Pages%20%7C%2031%20Diagrams-7c3aed?style=for-the-badge" alt="Wiki" /></a>
+</p>
+
+<p align="center">
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FRanjeet7680%2FCompressPro-AI-Complete-Software-Architecture-Implementation"><img src="https://vercel.com/button" alt="Deploy with Vercel" height="32" /></a>
 </p>
 
 ---

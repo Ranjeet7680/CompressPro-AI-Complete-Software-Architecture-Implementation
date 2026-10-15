@@ -50,14 +50,23 @@ class LocalDiskStorage(StorageInterface):
       storage_root/temp/
     """
     def __init__(self, storage_root: Optional[str] = None):
+        is_serverless = os.getenv("VERCEL") == "1" or os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
         if storage_root is None:
-            base_dir = Path(__file__).resolve().parent.parent.parent
-            self.storage_root = base_dir / "storage_vault"
+            if is_serverless:
+                self.storage_root = Path("/tmp/storage_vault")
+            else:
+                base_dir = Path(__file__).resolve().parent.parent.parent
+                self.storage_root = base_dir / "storage_vault"
         else:
             self.storage_root = Path(storage_root)
 
-        for folder in ["quarantine", "inputs", "artifacts", "temp"]:
-            (self.storage_root / folder).mkdir(parents=True, exist_ok=True)
+        try:
+            for folder in ["quarantine", "inputs", "artifacts", "temp"]:
+                (self.storage_root / folder).mkdir(parents=True, exist_ok=True)
+        except Exception:
+            self.storage_root = Path("/tmp/storage_vault")
+            for folder in ["quarantine", "inputs", "artifacts", "temp"]:
+                (self.storage_root / folder).mkdir(parents=True, exist_ok=True)
 
     def _generate_key(self, category: str, extension: str = "") -> str:
         unique_id = uuid.uuid4().hex
