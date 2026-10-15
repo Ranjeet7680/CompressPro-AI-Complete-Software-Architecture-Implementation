@@ -103,11 +103,19 @@ class StatsResponse(BaseModel):
 @app.get("/workspace", response_class=FileResponse)
 def serve_web_app():
     """Serves the CompressPro AI responsive web workspace."""
-    web_index = os.path.join(os.path.dirname(__file__), "..", "..", "web", "index.html")
-    return FileResponse(os.path.abspath(web_index))
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "public", "index.html"),
+        os.path.join(os.path.dirname(__file__), "..", "..", "web", "index.html"),
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "apps", "web", "index.html"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return FileResponse(os.path.abspath(p))
+    return FileResponse(os.path.abspath(candidates[1]))
 
 
 # --- Health & Stats Endpoints ---
+@app.get("/api/health/live")
 @app.get("/api/v1/health/live")
 def health_live():
     return {
@@ -117,6 +125,7 @@ def health_live():
     }
 
 
+@app.get("/api/health/ready")
 @app.get("/api/v1/health/ready")
 def health_ready(db: Session = Depends(get_db)):
     storage_ok = os.path.exists(str(default_storage.storage_root))
@@ -134,6 +143,7 @@ def health_ready(db: Session = Depends(get_db)):
     }
 
 
+@app.get("/api/stats", response_model=StatsResponse)
 @app.get("/api/v1/stats", response_model=StatsResponse)
 def get_system_stats(db: Session = Depends(get_db)):
     """Returns real database aggregated counts and metrics."""
