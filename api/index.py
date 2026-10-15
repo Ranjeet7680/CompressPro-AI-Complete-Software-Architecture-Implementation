@@ -25,9 +25,12 @@ async def app(scope, receive, send):
         # 1. Normalize literal function destination path if passed by Vercel rewrite
         if path.startswith("/api/index.py"):
             sub = path[len("/api/index.py"):]
-            if not sub:
-                sub = "/"
-            path = "/api" + sub if not sub.startswith("/api") else sub
+            if sub and sub != "/":
+                if not sub.startswith("/"):
+                    sub = "/" + sub
+                path = "/api" + sub if not sub.startswith("/api") else sub
+            else:
+                path = "/api/"
             scope["path"] = path
             scope["raw_path"] = path.encode("ascii")
 
