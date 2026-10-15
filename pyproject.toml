@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.100.0",
     "uvicorn>=0.23.0",
     "pydantic>=2.0.0",
+    "SQLAlchemy>=2.0.0",
     "Pillow>=10.0.0",
     "pypdf>=3.0.0",
     "pymupdf>=1.23.0",
@@ -20,3 +21,11 @@ dependencies = [
     "pytest>=7.0.0",
     "httpx>=0.24.0",
 ]
+
+[tool.uv]
+package = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apps*", "workers*"]
+exclude = ["assets*", "public*", "tests*", "docs*", "storage_vault*", "packages*", "api*"]
